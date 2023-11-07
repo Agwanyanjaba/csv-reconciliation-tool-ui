@@ -25,7 +25,7 @@ const App = () => {
 
     // make a POST request with Axios
     try {
-      const res = await axios.post('http://localhost:8088/v1/data-tool/reconciliation', formData, {
+      const res = await axios.post('https://ms-csv-recon-tool.onrender.com/v1/data-tool/reconciliation', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -71,7 +71,7 @@ const App = () => {
             <p>Please select two files</p>
             <form onSubmit={handleSubmit} encType='multipart/form-data'>
               <input type='file' name='file' multiple />
-              <button type='submit'>Submit</button>
+              <button type='submit'>Submit Files</button>
             </form>
             <div>{showSuccessMessage && <p>Files submitted successfully</p>}</div>
           </div>
