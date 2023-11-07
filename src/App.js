@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const App = () => {
   const currentYear = new Date().getFullYear();
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);  
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [summary, setSummary] = useState({
     missingInTarget: 0,
     missingInSource: 0,
     fieldDiscrepancies: 0,
   });
-
+  const [figures, setFigures] = useState([]);
 
   const handleSubmit = async (e) => {
     // prevent the page from reloading
@@ -42,6 +43,16 @@ const App = () => {
         fieldDiscrepancies: data[3].split(": ")[1],
       };
       setSummary(reconciliationData);
+
+      const extractedFigures = data
+        .filter(item => item.includes(':'))
+        .map(item => {
+          const [label, value] = item.split(':');
+          return { name: label.trim(), value: parseInt(value.trim()) || 0 };
+        });
+
+      setFigures(extractedFigures);
+
     } catch (error) {
       console.error('Error fetching reconciliation data:', error);
     }
@@ -55,7 +66,7 @@ const App = () => {
       <div style={{ height: '610px', backgroundColor: 'white', display: 'flex' }}>
         {/* Middle Section */}
         <div style={{ display: 'flex', flex: '3', flexDirection: 'row' }}>
-          <div style={{ flex: '3', border: '1px solid black', margin: '10px' , padding: '10px'}}>
+          <div style={{ flex: '3', border: '1px solid black', margin: '10px', padding: '10px' }}>
             <h2>Welcome, Upload two files to reconcile...</h2>
             <p>Please select two files</p>
             <form onSubmit={handleSubmit} encType='multipart/form-data'>
@@ -72,6 +83,23 @@ const App = () => {
           </div>
           <div style={{ flex: '4', border: '1px solid black', margin: '10px', padding: '10px' }}>
             <h2>Visualization</h2>
+            <div style={{ width: '100%', height: 400 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={figures}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    label
+                  />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
@@ -89,7 +117,7 @@ const App = () => {
           justifyContent: 'center',
         }}
       >
-        &copy; {currentYear} Wycliffe O. 
+        &copy; {currentYear} 
       </div>
     </div>
   );
