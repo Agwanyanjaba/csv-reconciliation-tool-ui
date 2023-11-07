@@ -117,7 +117,7 @@ const App = () => {
           justifyContent: 'center',
         }}
       >
-        &copy; {currentYear} 
+        &copy; {currentYear} Wycliffe O.
       </div>
     </div>
   );
